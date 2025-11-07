@@ -1,0 +1,189 @@
+# =====================
+# Core Language & Tools
+# =====================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# =====================
+# Data & Model Files
+# =====================
+
+# Raw data - CRITICAL to exclude
+data/raw/
+data/external/
+data/private/
+
+# Processed data (unless small sample files)
+data/processed/
+data/interim/
+
+# Model files and checkpoints
+models/
+*.pkl
+*.pickle
+*.joblib
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.bin
+*.safetensors
+checkpoints/
+training_checkpoints/
+
+# Vector databases & indices
+chroma_db/
+faiss_index/
+vector_store/
+indices/
+
+# Dataset caches
+.cache/
+.huggingface/
+.corpus/
+
+# =====================
+# Environment & Secrets
+# =====================
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.staging
+
+# Secrets
+secrets.json
+credentials.json
+service_account.json
+*.key
+*.pem
+
+# Configuration with secrets
+config.yaml
+config.yml
+config.json
+
+# =====================
+# IDE & Editor Files
+# =====================
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# PyCharm/IntelliJ
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# macOS
+.DS_Store
+
+# =====================
+# LLM-Specific Files
+# =====================
+
+# Tokenizer caches
+tokenizer_cache/
+
+# Training logs
+logs/
+runs/
+mlruns/
+wandb/
+
+# Preprocessing temp files
+tmp/
+temp/
+scratch/
+
+# Large output files
+outputs/
+submissions/
+predictions/
+
+# Dataset versions (if using DVC)
+data/.gitkeep  # Keep this if you want the directory structure
+
+# =====================
+# System & Package Files
+# =====================
+
+# Package management
+Poetry.lock
+Pipfile.lock
+poetry.toml
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Conda
+*.conda
+
+# =====================
+# DVC (if you use it)
+# =====================
+.dvc/tmp
+.dvc/state
+.dvc/lock
+.dvc/config.local
