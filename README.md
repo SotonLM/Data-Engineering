@@ -1,12 +1,8 @@
-Soton LM Data Engineering
+# Soton LM Data Engineering
 <div align="center">
 
 Building the Foundation for Large Language Models
 
-https://img.shields.io/badge/python-3.9+-blue.svg
-https://img.shields.io/badge/Prefect-2.0+-red.svg
-https://img.shields.io/badge/DuckDB-0.9+-yellow.svg
-https://img.shields.io/badge/License-MIT-yellow.svg
 </div>
 🎯 Project Overview
 
