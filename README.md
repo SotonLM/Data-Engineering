@@ -6,8 +6,6 @@
 [](https://github.com/psf/black)
 [](https://github.com/astral-sh/ruff)
 
-\</div\>
-
 ## 🎯 Project Overview
 
 [cite\_start]This is the data engineering division of the SotonLM project, tasked with building high-quality training data for large language models from diverse sources[cite: 1082]. Our mission is to transform raw, unstructured data from the internet into clean, structured, and version-controlled datasets ready for model training.
