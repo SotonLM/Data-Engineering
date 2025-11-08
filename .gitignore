@@ -60,14 +60,6 @@ ipython_config.py
 # Data & Model Files
 # =====================
 
-# Raw data - CRITICAL to exclude
-data/raw/
-data/external/
-data/private/
-
-# Processed data (unless small sample files)
-data/processed/
-data/interim/
 
 # Model files and checkpoints
 models/
@@ -160,8 +152,7 @@ outputs/
 submissions/
 predictions/
 
-# Dataset versions (if using DVC)
-data/.gitkeep  # Keep this if you want the directory structure
+
 
 # =====================
 # System & Package Files
