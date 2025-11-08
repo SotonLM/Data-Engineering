@@ -1,0 +1,57 @@
+[project]
+name = "soton_lm_data"
+version = "0.1.0"
+description = "Data engineering pipeline for the SotonLM project at the University of Southampton."
+authors = [
+    { name = "Mykyta Chursin", email = "mykyta.chursin@example.com" },
+    { name = "Soichiro Oyama-Bacon", email = "ricky.oyama-bacon@example.com" },
+]
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.dependencies]
+# --- Core Stack (Module 1) ---
+dvc[s3]            # Data version control with S3 support
+[cite_start]pandas             # Core data manipulation [cite: 1022]
+[cite_start]duckdb             # High-performance in-process OLAP DB [cite: 1022]
+pyarrow            # Required for fast Parquet I/O with pandas
+
+# --- Division 1: Academic (Module 2.1 / 3.1) ---
+[cite_start]arxiv              # Python wrapper for ArXiv API [cite: 168, 174]
+[cite_start]PyMuPDF            # PDF text and metadata extraction [cite: 168, 175, 391]
+
+# --- Division 2: Web (Module 2.2 / 3.1) ---
+[cite_start]scrapy             # High-speed scraping framework [cite: 225, 277]
+[cite_start]datasets           # Hugging Face datasets library (for streaming) [cite: 225, 247]
+[cite_start]beautifulsoup4     # HTML cleaning [cite: 440, 454]
+
+# --- Division 3: Social (Module 2.3 / 3.1) ---
+[cite_start]praw               # Python Reddit API Wrapper [cite: 309, 322]
+[cite_start]scrubadub          # PII removal library [cite: 490, 505]
+
+# --- Universal Cleaning (Module 3.2) ---
+[cite_start]datasketch         # For MinHash LSH near-duplicate detection [cite: 589, 592]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",      # For testing your cleaning functions
+    "black",       # Code formatter
+    "ruff",        # Linter
+    "pre-commit",  # Git hook management
+    "pip-tools",   # For compiling requirements.txt
+]
+
+# --- Tool Configuration ---
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 88
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort (import sorting)
+    "UP", # pyupgrade
+]
