@@ -1,7 +1,5 @@
 # Soton LM Data Engineering
 
-\<div align="center"\>
-
 [](https://www.python.org/downloads/)
 [](https://dvc.org/)
 [](https://duckdb.org/)
