@@ -15,3 +15,4 @@ python-dateutil>=2.8.0  # Date parsing
 # News Sources
 pygooglenews>=0.1.2  # Google News API
 newsapi-python>=0.2.7  # NewsAPI client
+wikipedia-api>=0.6.0
