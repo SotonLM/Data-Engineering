@@ -1,190 +1,211 @@
 # Soton LM Data Engineering
-<div align="center">
 
-Building the Foundation for Large Language Models
+\<div align="center"\>
 
-</div>
-🎯 Project Overview
+[](https://www.python.org/downloads/)
+[](https://dvc.org/)
+[](https://duckdb.org/)
+[](https://github.com/psf/black)
+[](https://github.com/astral-sh/ruff)
 
-This is the data engineering division of the Soton LM project, tasked with building high-quality training data for large language models from diverse sources. Our mission is to transform raw, unstructured data from the internet into clean, structured datasets ready for model training.
-Team Structure
+\</div\>
 
-We operate through three specialized divisions:
-Division	Focus Area	Data Sources
-🔬 Team 1 - Academic	Research & Educational Content	arXiv, research papers, technical documentation, educational materials
-🌐 Team 2 - Web	General Knowledge	Wikipedia, news articles, Common Crawl, general web content
-💬 Team 3 - Social	Conversational Data	Reddit, Twitter, social media platforms, forum discussions
-🚀 Quick Start
-Prerequisites
+## 🎯 Project Overview
 
-    Python 3.9 or higher
+[cite\_start]This is the data engineering division of the SotonLM project, tasked with building high-quality training data for large language models from diverse sources[cite: 1082]. Our mission is to transform raw, unstructured data from the internet into clean, structured, and version-controlled datasets ready for model training.
 
-    Git
+This repository contains all pipeline code, data pointers (DVC), and documentation.
 
-    Bash (Linux/Mac) or WSL (Windows)
+## 🚀 Team Structure
 
-One-Command Setup
+We operate through three specialized divisions, each focused on a different domain of data:
 
-We've automated the entire setup process! Run this single command to get started:
-bash
+| Division | Focus Area | Key Tools & Sources |
+| :--- | :--- | :--- |
+| **🔬 Division 1 - Academic** | Research & Technical Content | `arxiv` (API), `PyMuPDF` (PDFs) |
+| **🌐 Division 2 - Web** | General Knowledge | `Scrapy`, `datasets` (Wikipedia), `BeautifulSoup4` (HTML) |
+| **💬 Division 3 - Social** | Conversational Data | `PRAW` (Reddit), `Scrubadub` (PII Cleaning) |
 
-# Clone the repository (if you haven't already)
-git clone https://github.com/soton-lm/soton-lm-data-engineering.git
-cd soton-lm-data-engineering
+## ⚙️ Quick Start
 
-# Run the setup script
-./setup.sh
+This guide will set up your local environment, connect you to the data, and get you ready to contribute.
 
-What the setup script does:
+### Prerequisites
 
-    ✅ Creates the complete project structure
+  * Python 3.10 or higher
+  * [Git](https://git-scm.com/)
+  * [AWS CLI](https://aws.amazon.com/cli/) (for connecting to S3)
+  * [DVC (Data Version Control)](https://dvc.org/doc/install)
 
-    ✅ Sets up Python virtual environments
+### Setup Steps
 
-    ✅ Installs all required dependencies
+1.  **Clone the Repository:**
 
-    ✅ Configures pre-commit hooks
+    ```bash
+    git clone https://github.com/SotonLM/Data-Engineering.git
+    cd Data-Engineering
+    ```
 
-    ✅ Verifies your installation
+2.  **Create and Activate Virtual Environment:**
 
-    ✅ Provides team-specific setup
+    ```bash
+    # Create the environment
+    python -m venv venv
 
-Manual Setup (Alternative)
+    # Activate it (Mac/Linux)
+    source venv/bin/activate
 
-If you prefer manual setup or the script encounters issues:
-bash
-```
+    # Or (Windows)
+    .\venv\Scripts\activate
+    ```
 
-# Create and activate virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# OR
-venv\Scripts\activate     # Windows
+3.  **Install Dependencies:**
+    We use `pyproject.toml` to define dependencies and `pip-tools` to compile `requirements.txt` files.
 
-# Install base requirements
-pip install -r requirements.txt
+    ```bash
+    # Install the core tools to get started
+    pip install pip-tools
 
-# Install team-specific requirements (choose your team)
-pip install -r src/division_1_academic/requirements.txt  # Team 1
-# OR
-pip install -r src/division_2_web/requirements.txt       # Team 2  
-# OR
-pip install -r src/division_3_social/requirements.txt    # Team 3
+    # Compile and install the main dependencies
+    pip-compile pyproject.toml -o requirements.txt
+    pip install -r requirements.txt
 
-```
+    # Compile and install the development dependencies (like pytest, black, ruff)
+    pip-compile pyproject.toml --extras dev -o requirements-dev.txt
+    pip install -r requirements-dev.txt
+    ```
 
-📁 Project Structure
-text
+4.  **Install Git Hooks:**
+    This will automatically format and lint your code on every commit.
 
+    ```bash
+    pre-commit install
+    ```
+
+5.  **Configure AWS & DVC:**
+    This connects you to the S3 bucket where the 100GB+ dataset is stored.
+
+    ```bash
+    # 1. Configure your AWS credentials (using the keys provided by your co-lead)
+    aws configure
+
+    # 2. Pull the data from DVC (this will download the current dataset)
+    dvc pull
+    ```
+
+You are now fully set up and have the latest version of both the code and the data.
+
+## 📁 Project Structure
+
+```text
 soton-lm-data-engineering/
-├── data/                 # Data directories (auto-created)
-│   ├── raw/             # Raw source data
-│   └── clean/           # Processed, clean data
-├── src/                 # Source code
-│   ├── division_1_academic/     # Team 1: Academic data pipelines
-│   ├── division_2_web/          # Team 2: Web data pipelines  
-│   ├── division_3_social/       # Team 3: Social data pipelines
-│   └── shared/                  # Common utilities
-├── docs/                # Documentation
-├── .github/             # GitHub workflows
-├── requirements.txt     # Core dependencies
-└── setup.sh            # Setup script (you are here!)
+├── .dvc/                 # DVC internal files
+├── .github/              # GitHub workflows and PR templates
+├── data/
+│   ├── raw/              # Raw source data (tracked by DVC)
+│   │   ├── division_1_academic/
+│   │   ├── division_2_web/
+│   │   └── division_3_social/
+│   └── clean/            # Processed, clean data (tracked by DVC)
+│       └── ...
+├── docs/                 # Documentation (e.g., complete_documentation.json)
+├── src/                  # Source code for all data pipelines
+│   ├── division_1_academic/
+│   ├── division_2_web/
+│   ├── division_3_social/
+│   └── shared/           # Common utilities (e.g., deduplication)
+├── .gitignore
+├── pyproject.toml        # Project definition and dependencies
+├── requirements.txt      # Main locked dependencies (auto-generated)
+└── requirements-dev.txt  # Dev locked dependencies (auto-generated)
+```
 
-🛠️ Technology Stack
-Core Technologies
+## 🛠️ Technology Stack
 
-    Python - Primary programming language
+[cite\_start]Our stack is defined by `pyproject.toml` to ensure consistency and reproducibility[cite: 1082].
 
-    Pandas - Data manipulation and analysis
+### Core Technologies
 
-    PySpark - Distributed data processing
+  * **Python:** Our primary programming language.
+  * **DVC (Data Version Control):** For versioning large datasets and connecting to S3.
+  * **Pandas:** For core data manipulation.
+  * **DuckDB:** For high-performance queries and analysis.
+  * **PyArrow:** For efficient Parquet file I/O.
 
-    Prefect - Workflow orchestration
+### Division-Specific Tools
 
-    DuckDB - Analytical database
+  * **Division 1 (Academic):** `PyMuPDF`, `arxiv`.
+  * **Division 2 (Web):** `Scrapy`, `Hugging Face datasets`, `BeautifulSoup4`.
+  * **Division 3 (Social):** `PRAW` (for Reddit), `Scrubadub` (for PII).
+  * **Universal Cleaning:** `datasketch` (for MinHash LSH).
 
-    DVC - Data version control
+### Development & CI/CD
 
-Team-Specific Tools
+  * **`pip-tools`:** For compiling `requirements.txt` from `pyproject.toml`.
+  * **`pytest`:** For automated testing of our data pipelines.
+  * **`black`:** For automated code formatting.
+  * **`ruff`:** For high-speed linting.
+  * **`pre-commit`:** For running formatters/linters automatically before commits.
 
-    Team 1: PyMuPDF, arXiv API, NLTK, spaCy
+## 🔄 Development Workflow
 
-    Team 2: Wikipedia API, Newspaper3k, BeautifulSoup, Common Crawl
+Follow this workflow to contribute new data to the project.
 
-    Team 3: snscrape, PRAW, Tweepy, textstat
+1.  **Get Latest Changes:**
 
-👥 Team Workflow
-For New Contributors
+    ```bash
+    git checkout main
+    git pull
+    dvc pull  # Sync the latest data from S3
+    ```
 
-    Choose Your Team based on your interests
+2.  **Create a New Branch:**
+    Follow the "data quarantine" workflow from our handbook.
 
-    Run the Setup Script to configure your environment
+    ```bash
+    git checkout -b feature/div3/add-reddit-data
+    ```
 
-    Explore Your Team's Directory in src/division_*
+3.  **Write Your Code:**
+    Add your scripts to the `src/division_.../` directory.
 
-    Check Existing Issues on your team's project board
+4.  **Run Pipeline & Version Data:**
+    As you generate data, version it with DVC.
 
-    Start with a Good First Issue to get familiar with the codebase
+    ```bash
+    # 1. Run your sourcing script, which outputs to data/raw/
+    python src/division_3_social/01_source_reddit.py
 
-Development Workflow
-bash
+    # 2. Version the raw data
+    dvc add data/raw/division_3_social/reddit_batch_01.parquet
 
-# 1. Activate your environment (if not already active)
-source venv/bin/activate
+    # 3. Run your cleaning script, which outputs to data/clean/
+    python src/division_3_social/02_clean_reddit.py
 
-# 2. Start Prefect server for workflow management
-prefect server start
+    # 4. Version the clean data
+    dvc add data/clean/division_3_social/cleaned_reddit_01.parquet
+    ```
 
-# 3. Work on your data pipelines
-cd src/division_[your_team_number]
+5.  **Commit Code & Pointers:**
 
-# 4. Test your pipeline
-python your_pipeline.py
+    ```bash
+    # Add your scripts and the new .dvc pointer files
+    git add src/, data/
 
-# 5. Submit a pull request
+    # Commit your changes (pre-commit hooks will run)
+    git commit -m "feat(div3): Add and clean new batch of Reddit data"
+    ```
 
-Team-Specific Quick Commands
+6.  **Push Everything:**
+    This is a two-step process: data first, then code.
 
-Team 1 (Academic):
-bash
+    ```bash
+    # 1. Push DATA to S3
+    dvc push
 
-./setup.sh 1
-python src/division_1_academic/arxiv_pipeline.py
+    # 2. Push CODE and POINTERS to GitHub
+    git push -u origin feature/div3/add-reddit-data
+    ```
 
-Team 2 (Web):
-bash
-
-./setup.sh 2  
-python src/division_2_web/wikipedia_pipeline.py
-
-Team 3 (Social):
-bash
-
-./setup.sh 3
-python src/division_3_social/reddit_pipeline.py
-
-📊 Data Standards
-
-All teams must adhere to our data quality standards:
-Output Schema
-
-All processed data should follow this structure:
-python
-
-{
-    'text': str,           # Cleaned text content
-    'source': str,         # Data source identifier
-    'language': str,       # Language code (e.g., 'en')
-    'quality_score': float,# 0-1 quality metric
-    'timestamp': datetime, # When data was collected
-    'metadata': dict       # Team-specific fields
-}
-
-File Formats
-
-    Raw Data: Original format (JSON, HTML, PDF, etc.)
-
-    Processed Data: Parquet files with compression
-
-    Intermediate Files: Temporary processing files
-
+7.  **Open a Pull Request:**
+    Go to GitHub and open a Pull Request. Fill out the `PULL_REQUEST_TEMPLATE.md` and be sure to update the `docs/complete_documentation.json` as required.
