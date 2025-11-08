@@ -1,0 +1,15 @@
+# Social Media Scraping
+snscrape>=0.6.0  # Social media scraping
+praw>=7.7.0  # Reddit API
+tweepy>=4.14.0  # Twitter API
+python-linkedin>=1.0.1  # LinkedIn data
+
+# Text Analysis
+textstat>=0.7.0  # Readability metrics
+emoji>=2.8.0  # Emoji handling
+better-profanity>=0.7.0  # Content filtering
+textblob>=0.17.0  # Sentiment analysis
+
+# Conversation Processing
+convokit>=2.0.0  # Conversation analysis
+networkx>=3.0  # Social network analysis
