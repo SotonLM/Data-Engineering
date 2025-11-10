@@ -65,10 +65,6 @@ This guide will set up your local environment, connect you to the data, and get 
     # Compile and install the main dependencies
     pip-compile pyproject.toml -o requirements.txt
     pip install -r requirements.txt
-
-    # Compile and install the development dependencies (like pytest, black, ruff)
-    pip-compile pyproject.toml --extras dev -o requirements-dev.txt
-    pip install -r requirements-dev.txt
     ```
 
 4.  **Install Git Hooks:**
