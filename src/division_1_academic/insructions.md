@@ -96,9 +96,15 @@ These will be used to manage and debug the pipeline, so that the fetching proces
 This stage determines which text from the raw data should be used to train the LLM.
 
 There are a bunch of things to clean from raw data - the main point is to extract the most relevent parts of text.
+
+The catch here is that not all raw documents can use the same cleaner (e.g. arxiv documents have content begin and end markers, where other sources wont have that).
+This is where configs come into place.
+
+Instead of writing several cleaner scripts, we can have a single cleaner script parsing a cleaner config file of choice.
+
+
 Below is a list that we've come up with on what needs to be cleaned off, but if you discover anything else that should be on here, feel free to update this list.
 
-If the project is in progress, be sure to update the cleaner script.
 
 ## Elements to Remove
 
@@ -124,4 +130,22 @@ One source can describe figures with "Figure 1:", and another may describe it wi
 
 Clean data will be stored in the parquet file format.
 
+Documentation of clean data has the same benefits of documenting raw data, with the addition of it helping with checking reproducability and cleaner debugging.
 
+
+## General Identification
+
+- Source ID of Raw Data used.
+- Hash of Raw Data.
+- Path of the Raw Data File.
+
+
+## Cleaning Quality
+
+- Cleaning Timestamp.
+- Cleaner Used. This could be a separate c
+- Math Handling. A lot of the data, especially ones from this division, will have mathematical expressions written in LaTeX. This is to log whether you kept the latex code
+for the expression, rewrote the expression in some other way or just straight up deleted it. My recommendation is to just keep the LaTeX as it is, but having it learn math 
+another way might be cool as long as you document it here.
+
+- 
