@@ -3,10 +3,9 @@
 
 The flow of the pipeline should be as follows : Data Fetching -> Raw Data Storage -> Cleaning -> Clean Data Storage
 
-Note that Raw Data Storage and Clean Data Storage MUST include some sort of documentation, but that will be explained slightly later.
 Here, we will explain in detail what you need to do for each section of the pipeline.
 
-# Data Fetching
+# ------------------- Data Fetching ---------------------------
 
 Your main source platform is probably arXiv, as mentioned in the meetings. 
 However, we've added the apis for [semanticscholar](https://www.semanticscholar.org/) 
@@ -19,9 +18,17 @@ is automated documentation and storage of all fetched data.
 1. Make sure sources are relevant to the division; we want to keep data storage as organized as possible.
 2. Add any additional libraries you used to fetch data from your preferred source into the requirements.txt.
 
-# Documenting Raw Data
+One other thing to make sure in general is that the sources are in English. Multi-language support is a VERY long term 
+objective, so we shouldnt worry about it now.
+
+# --------------- Documenting Raw Data ----------------------
+
+As emphasised in previous meetings, documentation of data, whether clean or not, is VERY important.
+If the LLM breaks in some way, the blame most likely goes to what and how data was fed into it.
+Documenting data makes debugging and fixing the breaks SO MUCH EASIER.
 
 For the sake of readability and organization, documented raw data should be stored in the JSON file format.
+The 
 
 A lot of the metadata can be extracted from the fetched data, but there will be some that the script will have to generate on its own.
 Below will be a list of what you need to document for every data fetched.
@@ -33,6 +40,22 @@ One recommendation of forming an ID is by mixing up the source type and url. for
 you can form the ID to be something like "arxiv:2511.11480v1". 
 
 Note - You might not be able to use the same protocol for every platform, so you might have to come up with a different way to generate IDs for different platforms.
+
+## Actual Content of Data
+Theres the main content you want from the data source like:
+
+- Title
+- Abstract
+- Full Text
+
+You would also want some additional data that accompanies the main content:
+
+- Authors
+- Date of Publication
+- Categories. Category of article, or relevant keywords
+- Word Count
+- Character Count
+
 
 ## General Data for Identification
 
@@ -48,16 +71,7 @@ The fetch method is probably one of the greater causes of errors, so its very, V
 - File Size in Bytes.
 
 
-##  Metadata from raw Data
 
-You can probably get the following from the articles themselves. 
-Hence, the program should fetch and store the following fields into the JSON:
-
-- Title
-- Authors
-- Date of Publication
-- Abstract
-- Categories. Category of article, or relevant keywords
 
 
 ## Legal Metadata
@@ -91,16 +105,13 @@ These will be used to manage and debug the pipeline, so that the fetching proces
 
 
 
-# Data Cleaning
+# --------------- Data Cleaning -----------------------
 
 This stage determines which text from the raw data should be used to train the LLM.
 
 There are a bunch of things to clean from raw data - the main point is to extract the most relevent parts of text.
 
-The catch here is that not all raw documents can use the same cleaner (e.g. arxiv documents have content begin and end markers, where other sources wont have that).
-This is where configs come into place.
-
-Instead of writing several cleaner scripts, we can have a single cleaner script parsing a cleaner config file of choice.
+The catch here is that not all raw documents can use the same cleaner (e.g. arxiv documents have content begin and end markers, where other sources wont have that). Hence, we want a cleaner script for each sourcing platform.
 
 
 Below is a list that we've come up with on what needs to be cleaned off, but if you discover anything else that should be on here, feel free to update this list.
@@ -126,26 +137,40 @@ One source can describe figures with "Figure 1:", and another may describe it wi
 
 
 
-# Documenting Clean Data
+# ----------------- Documenting Clean Data ---------------------
 
-Clean data will be stored in the parquet file format.
+Clean data will be stored in the parquet file format. This optimizes data reading which is useful for tokenization later.
 
 Documentation of clean data has the same benefits of documenting raw data, with the addition of it helping with checking reproducability and cleaner debugging.
 
 
+## Actual Contents of Data
+
+- Title
+- Cleaned Version of the Full Text
+- Cleaned Abstract
+
+We also want these as well:
+
+- Word Count after Cleaning
+- Character Count after Cleaning
+
+
 ## General Identification
+
+These should be found from the documented raw data file.
 
 - Source ID of Raw Data used.
 - Hash of Raw Data.
 - Path of the Raw Data File.
+- Fetch Timestamp
 
 
 ## Cleaning Quality
 
 - Cleaning Timestamp.
-- Cleaner Used. This could be a separate c
-- Math Handling. A lot of the data, especially ones from this division, will have mathematical expressions written in LaTeX. This is to log whether you kept the latex code
-for the expression, rewrote the expression in some other way or just straight up deleted it. My recommendation is to just keep the LaTeX as it is, but having it learn math 
-another way might be cool as long as you document it here.
+- Cleaner Script Used.
+- Math Handling. A lot of the data, especially ones from this division, will have mathematical expressions written in LaTeX. This is to log whether you kept the latex code for the expression, rewrote the expression in some other way or just straight up deleted it. My recommendation is to just keep the LaTeX as it is, but having it learn other math syntaxes could help.
+- Code Handling.
 
-- 
+
