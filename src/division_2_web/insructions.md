@@ -1,19 +1,18 @@
 
-The following are the instructions for data engineers in division 1 - academic and technical.
-This should be ready to read and crack on with.
+The folllwing are the tasks for data engineers in division 2 - general web & news.
 
+This document however is currently just a copy and paste of divison 1's instructions, so its not ready for use for now.
 
 # **Main Task** - Create an automated pipeline for data collection
 
-The flow of the pipeline should be as follows : Data Fetching -> Raw Data Storage -> Cleaning -> Cleaning Evaluation -> Clean Data Storage
+The flow of the pipeline should be as follows : Data Fetching -> Raw Data Storage -> Cleaning -> Clean Data Storage
 
 Here, we will explain in detail what you need to do for each section of the pipeline.
 
 # ------------------- Data Fetching ---------------------------
 
-Your main source platform is probably arXiv, as mentioned in the meetings. 
-However, we've added the apis for [semanticscholar](https://www.semanticscholar.org/) 
-and [crossref](https://www.crossref.org/) within the requirements.txt.
+Your division probably has the most variety for the sources of data. In requirements.txt, we've provided the apis for Wikipedia, along with 
+others like [google news]()
 
 Usage of these apis will be quite straightforward - the main thing you need to account for 
 is automated documentation and storage of all fetched data.
@@ -59,9 +58,6 @@ You would also want some additional data that accompanies the main content:
 - Categories. Category of article, or relevant keywords
 - Word Count
 - Character Count
-- Raw Data Quality. 
-If you dont know how to calculate data quality, read section 3 of "https://dl.gi.de/server/api/core/bitstreams/89cb2dc4-8a1d-424d-9bce-6569b6e4ae8e/content"
-or just ask AI if you dont like human papers.
 
 
 ## General Data for Identification
@@ -111,28 +107,6 @@ These will be used to manage and debug the pipeline, so that the fetching proces
 
 
 
-# -------------- Storage of Raw Data ----------------------
-
-Added this section because the storage method of raw and clean data are different.
-
-Once again, the documented raw data will be put into the JSON file format. You will now put this file into the microsoft azure cloud storage.
-Random fact drop: we expect in the long term about 5 - 10 TB of data going into the storage.
-
-we have provided a script (src/storefunc.py) which contains a function (store_to_azure) to store a file into the azure blob.
-
-store_to_azure() takes two arguments: the file name and your division's container name.
-**The Azure Blob container name for your division is "academic-technical". DO NOT STORE ANYWHERE ELSE, OR ADD IRRELEVENT DATA.**
-
-You can import this function to the pipeline you create like this:
-
-```
-    from storefunc import store_to_azure
-```
-
-So once documented, store the JSON file onto the blob. Simple as balls.
-
-Quick heads up - storing clean data is a bit more complicated.
-
 
 # --------------- Data Cleaning -----------------------
 
@@ -168,22 +142,21 @@ One source can describe figures with "Figure 1:", and another may describe it wi
 
 # ----------------- Documenting Clean Data ---------------------
 
+Clean data will be stored in the parquet file format. This optimizes data reading which is useful for tokenization later.
+
 Documentation of clean data has the same benefits of documenting raw data, with the addition of it helping with checking reproducability and cleaner debugging.
 
-Here's another checklist to go through:
 
 ## Actual Contents of Data
 
 - Title
+- Cleaned Version of the Full Text
 - Cleaned Abstract
 
 We also want these as well:
 
 - Word Count after Cleaning
 - Character Count after Cleaning
-- Cleaned data quality
-
-Now you may ask - You forgot about the main cleaned content you marinated melon! Dont worry my lemons ill get to that later (never saying that again)
 
 
 ## General Identification
@@ -201,24 +174,6 @@ These should be found from the documented raw data file.
 - Cleaning Timestamp.
 - Cleaner Script Used.
 - Math Handling. A lot of the data, especially ones from this division, will have mathematical expressions written in LaTeX. This is to log whether you kept the latex code for the expression, rewrote the expression in some other way or just straight up deleted it. My recommendation is to just keep the LaTeX as it is, but having it learn other math syntaxes could help.
-- Code Handling. I recommend you standardize how you note the beginning and ending of a snippet of code from any paper. Since, notations of this can vary 
-(in markdown, this can be ``` WHATEVER CODE THERE IS ```, whereas in latex it could be \begin{verbatim} CODE \end{verbatim}).
-
-
-# -------------------- Storing Clean Data ----------------------------
-
-Storage of clean data is mainly where databases come in play. Since, we like clean data and we want clean data to be stored cleanly.
-
-But since the database file is version controlled, we don't want to store the main cleaned content directly in there.
-The solution is as follows:
-- store the txt file which contains the cleaned version of the main content into the azure container.
-- get the URL of the file thats now inside the azure container. The store_to_azure function will return the URL upon storage, so use that.
-- INSERT to the database all of the metadata, and the URL of the clean data file.
-
-The URL in this case acts as a pointer element. Using this URL, we can read from the file in the blob any time, without storing the bulk of the content
-into the database.
-
-An example of an azure blob URL is as follows:
-"https://sotonlmdeng.blob.core.windows.net/conversational-social/sacrifice.txt"
+- Code Handling.
 
 

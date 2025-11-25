@@ -18,3 +18,4 @@ pyarrow==22.0.0          # From pyproject.toml (or newer)
 pymupdf==1.26.6      # From pyproject.toml (or newer)
 scrapy==2.13.3           # From pyproject.toml
 scrubadub==2.0.1         # From pyproject.toml (latest stable)
+python-dotenv>=1.0.0
