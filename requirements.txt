@@ -6,7 +6,6 @@
 #
 #
 # via soton_lm_data
-arxiv==2.3.0             # From pyproject.toml
 beautifulsoup4==4.14.2   # From pyproject.toml
 datasketch==1.7.0        # From pyproject.toml (or newer)
 datasets==4.3.0          # From pyproject.toml (or newer)
@@ -19,3 +18,4 @@ pymupdf==1.26.6      # From pyproject.toml (or newer)
 scrapy==2.13.3           # From pyproject.toml
 scrubadub==2.0.1         # From pyproject.toml (latest stable)
 python-dotenv>=1.0.0
+azure-storage-blob>=12.20.0
