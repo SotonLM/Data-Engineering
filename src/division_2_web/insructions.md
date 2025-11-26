@@ -1,25 +1,27 @@
 
-The folllwing are the tasks for data engineers in division 2 - general web & news.
+The following are the instructions for data engineers in division 2 - general web and news.
+This one is currently under development.
 
-This document however is currently just a copy and paste of divison 1's instructions, so its not ready for use for now.
 
 # **Main Task** - Create an automated pipeline for data collection
 
-The flow of the pipeline should be as follows : Data Fetching -> Raw Data Storage -> Cleaning -> Clean Data Storage
+The flow of the pipeline should be as follows : 
+    Data Fetching -> Raw Data Storage -> Cleaning -> Cleaning Evaluation -> Clean Data Storage
 
 Here, we will explain in detail what you need to do for each section of the pipeline.
 
 # ------------------- Data Fetching ---------------------------
 
-Your division probably has the most variety for the sources of data. In requirements.txt, we've provided the apis for Wikipedia, along with 
-others like [google news]()
+Your division will have the greatest variety for sources. We currently have apis for Wikipedia and Google News,
+    but feel free to add to this list.
+
+**- If you want to use a new data source - **
+1. Make sure sources are relevant to the division; we want to keep data storage as organized as possible.
+2. Add any additional libraries you used to fetch data from your preferred source into the requirements.txt.
 
 Usage of these apis will be quite straightforward - the main thing you need to account for 
 is automated documentation and storage of all fetched data.
 
-**IF you want to find and source data from another platform of your choice - **
-1. Make sure sources are relevant to the division; we want to keep data storage as organized as possible.
-2. Add any additional libraries you used to fetch data from your preferred source into the requirements.txt.
 
 One other thing to make sure in general is that the sources are in English. Multi-language support is a VERY long term 
 objective, so we shouldnt worry about it now.
@@ -39,8 +41,6 @@ Below will be a list of what you need to document for every data fetched.
 **WARNING** - The list of metadata to store may be subject to change. But don't worry, this won't happen too often, if at all.
 
 - Source ID. A unique identifier for fetched data. You have to generate these with code.
-One recommendation of forming an ID is by mixing up the source type and url. for example, if the source type is "arxiv" and the url is "https://arxiv.org/abs/2511.11480v1",
-you can form the ID to be something like "arxiv:2511.11480v1". 
 
 Note - You might not be able to use the same protocol for every platform, so you might have to come up with a different way to generate IDs for different platforms.
 
@@ -58,6 +58,9 @@ You would also want some additional data that accompanies the main content:
 - Categories. Category of article, or relevant keywords
 - Word Count
 - Character Count
+- Raw Data Quality. 
+If you dont know how to calculate data quality, read section 3 of "https://dl.gi.de/server/api/core/bitstreams/89cb2dc4-8a1d-424d-9bce-6569b6e4ae8e/content"
+or just ask AI if you dont like human papers.
 
 
 ## General Data for Identification
@@ -77,14 +80,19 @@ The fetch method is probably one of the greater causes of errors, so its very, V
 
 
 
-## Legal Metadata
+## Legal and Ethical Metadata
 
 WE NEED THESE. As much as I want to be an unethical demon, we have to make sure to not break any rules.
 
 - License Type.
 - License URL. Mainly for human reading.
+- robots.txt Content. robots.txt is a web embedded txt file that is common in a lot of platforms.
+    It's made as a kind ask to follow some rules when scraping data from their site.
+    Not legally enforced, but we also want to be nice to the platforms.
+    They're the ones feeding us the food, after all.
 
-You should also have the program to automate a rough analysis of the license. We can summarise the license by storing the following booleans:
+You should also have the program to automate a rough analysis of the license. 
+We can summarise the license by storing the following booleans:
 
 - Commercial use of Data is Allowed. Yes, the project will be open source. But it will be a problem if someone uses our project for a commercial one of their own,
 and some of the training data doesn't allow commercial use. So this ideally should be **True**.
@@ -107,6 +115,28 @@ These will be used to manage and debug the pipeline, so that the fetching proces
 
 
 
+# -------------- Storage of Raw Data ----------------------
+
+Added this section because the storage method of raw and clean data are different.
+
+Once again, the documented raw data will be put into the JSON file format. You will now put this file into the microsoft azure cloud storage.
+Random fact drop: we expect in the long term about 5 - 10 TB of data going into the storage.
+
+we have provided a script (src/storefunc.py) which contains a function (store_to_azure) to store a file into the azure blob.
+
+store_to_azure() takes two arguments: the file name and your division's container name.
+**The Azure Blob container name for your division is "academic-technical". DO NOT STORE ANYWHERE ELSE, OR ADD IRRELEVENT DATA.**
+
+You can import this function to the pipeline you create like this:
+
+```
+    from storefunc import store_to_azure
+```
+
+So once documented, store the JSON file onto the blob. Simple as balls.
+
+Quick heads up - storing clean data is a bit more complicated.
+
 
 # --------------- Data Cleaning -----------------------
 
@@ -123,16 +153,14 @@ Below is a list that we've come up with on what needs to be cleaned off, but if 
 ## Elements to Remove
 
 - Authors and Date of Publication.
-- for arXiv: [file content begin] and [file content end]. Other data sources can have their own metadata like this, so make sure to remove them as well.
 - Page Numbers and Page Number Markers
 - URLs
 - Citation Markers. Stuff like [], [; ], [10, 11, 12, 13]
 - Join Hyphenated Words. So words like "anti-gravity" should just be joined into "antigravity", to simplify training data.
-- Some phrases like "et al".
 
 ## Elements to Change/Standardize
 
-- Figure, Table and Equation Markers. 
+- Figure, Table and Image Markers. 
 One source can describe figures with "Figure 1:", and another may describe it with "FIGURE 1:". We want to standardize this for consistency.
 - Section Headers.
 - Bibliography.
@@ -142,21 +170,22 @@ One source can describe figures with "Figure 1:", and another may describe it wi
 
 # ----------------- Documenting Clean Data ---------------------
 
-Clean data will be stored in the parquet file format. This optimizes data reading which is useful for tokenization later.
-
 Documentation of clean data has the same benefits of documenting raw data, with the addition of it helping with checking reproducability and cleaner debugging.
 
+Here's another checklist to go through:
 
 ## Actual Contents of Data
 
 - Title
-- Cleaned Version of the Full Text
 - Cleaned Abstract
 
 We also want these as well:
 
 - Word Count after Cleaning
 - Character Count after Cleaning
+- Cleaned data quality
+
+Now you may ask - You forgot about the main cleaned content you marinated melon! Dont worry my lemons ill get to that later (never saying that again)
 
 
 ## General Identification
@@ -173,7 +202,26 @@ These should be found from the documented raw data file.
 
 - Cleaning Timestamp.
 - Cleaner Script Used.
-- Math Handling. A lot of the data, especially ones from this division, will have mathematical expressions written in LaTeX. This is to log whether you kept the latex code for the expression, rewrote the expression in some other way or just straight up deleted it. My recommendation is to just keep the LaTeX as it is, but having it learn other math syntaxes could help.
-- Code Handling.
+- Math Handling. This is to log whether you kept the latex code for the expression, rewrote the expression in some other way or just straight up deleted it. My recommendation is to just keep the LaTeX as it is, but having it learn other math syntaxes could help.
+- Code Handling. I recommend you standardize how you note the beginning and ending of a snippet of code. 
+    Since, notations of this can vary.
+(in markdown, this can be ``` WHATEVER CODE THERE IS ```, whereas in latex it could be \begin{verbatim} CODE \end{verbatim}).
+
+
+# -------------------- Storing Clean Data ----------------------------
+
+Storage of clean data is mainly where databases come in play. Since, we like clean data and we want clean data to be stored cleanly.
+
+But since the database file is version controlled, we don't want to store the main cleaned content directly in there.
+The solution is as follows:
+- store the txt file which contains the cleaned version of the main content into the azure container.
+- get the URL of the file thats now inside the azure container. The store_to_azure function will return the URL upon storage, so use that.
+- INSERT to the database all of the metadata, and the URL of the clean data file.
+
+The URL in this case acts as a pointer element. Using this URL, we can read from the file in the blob any time, without storing the bulk of the content
+into the database.
+
+An example of an azure blob URL is as follows:
+"https://sotonlmdeng.blob.core.windows.net/conversational-social/sacrifice.txt"
 
 
