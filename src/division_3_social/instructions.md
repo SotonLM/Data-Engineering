@@ -1,10 +1,13 @@
 
-The following are the instructions for data engineers in division 2 - general web and news.
-This document is nigh-complete, and you can probably crack on after skimming through.
+The following are the instructions for data engineers in division 3 - conversational and social.
+This one is also currently under development.
+
 
 Warning - this document was written based on the instructions for division 1, just because that was 
     the first one I wrote. If there's any mention of academics or technical bs, you have the choice
     to let me know or ignore it.
+Additional Warning - this document was written based on the instructions for division 2, which is based
+    on division 1. **Same warning as above**.
 
 
 # **Main Task** - Create an automated pipeline for data collection
@@ -16,8 +19,15 @@ Here, we will explain in detail what you need to do for each section of the pipe
 
 # ------------------- Data Fetching ---------------------------
 
-Your division will have the greatest variety for sources. We currently have apis for Wikipedia and Google News,
-    but feel free to add to this list.
+The data source for your division is mostly the very social media apps that you use today. 
+We've currently provided you the API for Twitter and Reddit, but obviously, feel free to add to this list.
+
+<small>Some trivia - remmember when Elon Musk officially revealed that all posts on X/Twitter is used for their AI training,
+and then all of the artists moved on to Bluesky? The fun fact here is that Bluesky isn't actually safe from web 
+scraping, especially since it's open source. Now you can feel more educated than these anti AI artists that don't 
+know what they are preaching for!
+
+sincerely, by a non-AI artist.</small>
 
 **- If you want to use a new data source - **
 1. Make sure sources are relevant to the division; we want to keep data storage as organized as possible.
@@ -139,7 +149,7 @@ Random fact drop: we expect in the long term about 5 - 10 TB of data going into 
 we have provided a script (src/storefunc.py) which contains a function (store_to_azure) to store a file into the azure blob.
 
 store_to_azure() takes two arguments: the file name and your division's container name.
-**The Azure Blob container name for your division is "web-news". DO NOT STORE ANYWHERE ELSE, OR ADD IRRELEVENT DATA.**
+**The Azure Blob container name for your division is "conversational-social". DO NOT STORE ANYWHERE ELSE, OR ADD IRRELEVENT DATA.**
 
 You can import this function to the pipeline you create like this:
 

@@ -39,9 +39,6 @@ Below will be a list of what you need to document for every data fetched.
 
 **WARNING** - The list of metadata to store may be subject to change. But don't worry, this won't happen too often, if at all.
 
-- Source ID. A unique identifier for fetched data. You have to generate these with code.
-One recommendation of forming an ID is by mixing up the source type and url. for example, if the source type is "arxiv" and the url is "https://arxiv.org/abs/2511.11480v1",
-you can form the ID to be something like "arxiv:2511.11480v1". 
 
 Note - You might not be able to use the same protocol for every platform, so you might have to come up with a different way to generate IDs for different platforms.
 
@@ -59,6 +56,8 @@ You would also want some additional data that accompanies the main content:
 - Categories. Category of article, or relevant keywords
 - Word Count
 - Character Count
+- Detected Language. Should be EN.
+- Language Confidence Score. A ratio of {Main Detected Language}/{All Detected Languages}. This should show how ENGLISH the text is.
 - Raw Data Quality. 
 If you dont know how to calculate data quality, read section 3 of "https://dl.gi.de/server/api/core/bitstreams/89cb2dc4-8a1d-424d-9bce-6569b6e4ae8e/content"
 or just ask AI if you dont like human papers.
@@ -66,13 +65,19 @@ or just ask AI if you dont like human papers.
 
 ## General Data for Identification
 
+
+- Source ID. A unique identifier for fetched data. You have to generate these with code.
+One recommendation of forming an ID is by mixing up the source type and url. for example, if the source type is "arxiv" and the url is "https://arxiv.org/abs/2511.11480v1",
+you can form the ID to be something like "arxiv:2511.11480v1". 
+
 - Source Type. The platform you sourced the data from.
 - Source URL. The exact URL of where the data came from.
+- Content Type. Report or Article or something else?
 
 - Fetch Timestamp. The program should generate a timestamp of exactly when they fetched the data.
 - Fetch Method. The program should note down the APIs and Libraries used to fetch this data. 
 The fetch method is probably one of the greater causes of errors, so its very, VERY important.
-
+    
 - Hashed Content. A hash of the raw content. The program should produce a hash from data whenever they're fetched. Useful for detecting duplications.
 - Original File Format Type of Fetched Data.
 - File Size in Bytes.
@@ -155,6 +160,8 @@ Below is a list that we've come up with on what needs to be cleaned off, but if 
 - Citation Markers. Stuff like [], [; ], [10, 11, 12, 13]
 - Join Hyphenated Words. So words like "anti-gravity" should just be joined into "antigravity", to simplify training data.
 - Some phrases like "et al".
+- 2 + whitespaces. if    the      text   is   spaced out   like   this   its    very    annoying
+
 
 ## Elements to Change/Standardize
 
