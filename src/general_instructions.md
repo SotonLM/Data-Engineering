@@ -139,7 +139,8 @@ If you want to learn what each library does, I recommend a mix of asking AI and 
 
 
 # ----- If you made it this far... ------
-After understanding how to contribute to this project, you should go and get the gist of 
-    **what to contribute to this project**.
+Now that you understand how to contribute, you can check out *what* to contribute
+ by going through the instructions.md in your division's directory.
 
-Start off by going to your division's directory and going through its instructions.md.
+Note : these instructions aren't ironed down, and if you find any points that you want
+    to add/correct, don't feel opposed to do so. Just keep the contents within objective.

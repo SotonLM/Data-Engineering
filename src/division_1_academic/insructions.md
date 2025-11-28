@@ -15,7 +15,7 @@ Your main source platform is probably arXiv, as mentioned in the meetings.
 However, we've added the apis for [semanticscholar](https://www.semanticscholar.org/) 
 and [crossref](https://www.crossref.org/) within the requirements.txt.
 
-Usage of these apis will be quite straightforward - the main thing you need to account for 
+Usage of fetching apis will be quite straightforward - the main thing you need to account for 
 is automated documentation and storage of all fetched data.
 
 **IF you want to find and source data from another platform of your choice - **
@@ -224,6 +224,10 @@ The solution is as follows:
 
 The URL in this case acts as a pointer element. Using this URL, we can read from the file in the blob any time, without storing the bulk of the content
 into the database.
+
+
+**BUT WAIT!!!** Storing clean data into the database just because it's clean won't make for a good LLM.
+You should only store pointers for clean data above a certain quality score - yes, we want all 10GB of clean data to be high quality.
 
 An example of an azure blob URL is as follows:
 "https://sotonlmdeng.blob.core.windows.net/conversational-social/sacrifice.txt"

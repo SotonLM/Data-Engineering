@@ -23,7 +23,11 @@ Your division will have the greatest variety for sources. We currently have apis
 1. Make sure sources are relevant to the division; we want to keep data storage as organized as possible.
 2. Add any additional libraries you used to fetch data from your preferred source into the requirements.txt.
 
-Usage of these apis will be quite straightforward - the main thing you need to account for 
+
+
+
+
+Usage of fetching apis will be quite straightforward - the main thing you need to account for 
 is automated documentation and storage of all fetched data.
 
 
@@ -215,7 +219,7 @@ We also want these as well:
 
 - Word Count after Cleaning
 - Character Count after Cleaning
-- Cleaned data quality
+- Cleaned data quality score
 
 Now you may ask - You forgot about the main cleaned content you marinated melon! Dont worry my lemons ill get to that later (never saying that again)
 
@@ -252,6 +256,9 @@ The solution is as follows:
 
 The URL in this case acts as a pointer element. Using this URL, we can read from the file in the blob any time, without storing the bulk of the content
 into the database.
+
+**BUT WAIT!!!** Storing clean data into the database just because it's clean won't make for a good LLM.
+You should only store pointers for clean data above a certain quality score - yes, we want all 10GB of clean data to be high quality.
 
 An example of an azure blob URL is as follows:
 "https://sotonlmdeng.blob.core.windows.net/conversational-social/sacrifice.txt"
