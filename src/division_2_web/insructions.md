@@ -144,6 +144,7 @@ we have provided a script (src/storefunc.py) which contains a function (store_to
 
 store_to_azure() takes two arguments: the file name and your division's container name.
 **The Azure Blob container name for your division is "web-news". DO NOT STORE ANYWHERE ELSE, OR ADD IRRELEVENT DATA.**
+I recommend trying to separate the clean and the raw files within the container.
 
 You can import this function to the pipeline you create like this:
 

@@ -86,6 +86,7 @@ I'll get into the details of toxicity score later.
 - Hashed version of the messenger's username.
 - User Type. OP? Commenter? Mods?
 - Message Content.
+- Message Content, hashed.
 - Message Length in words. If this is low (e.g. one word response like lmao), dont even bother saving this message as a file.
 - Message Position within the conversation (How many'th message is this in the entire conversation?)
 - Quality Score.
@@ -149,7 +150,8 @@ Random fact drop: we expect in the long term about 5 - 10 TB of data going into 
 
 we have provided a script (src/storefunc.py) which contains a function (store_to_azure) to store a file into the azure blob.
 
-store_to_azure() takes two arguments: the file name and your division's container name.
+store_to_azure() takes three arguments: file name, your division's container name, and the type of your file ("raw" or clean").
+
 **The Azure Blob container name for your division is "conversational-social". DO NOT STORE ANYWHERE ELSE, OR ADD IRRELEVENT DATA.**
 
 You can import this function to the pipeline you create like this:
@@ -158,10 +160,18 @@ You can import this function to the pipeline you create like this:
     from storefunc import store_to_azure
 ```
 
-So once documented, store the JSON file onto the blob. Simple as balls.
+Although, for your division specifically, you might want to store the conversation's JSON and the individual messages' JSON separately.
 
-Quick heads up - storing clean data is a bit more complicated.
+The third argument of the function is actually the directory path, so if you specify "raw/convos", 
+    then you can store a file in the raw/convos directory.
+Meaning that when using store_to_azure(), your function call should look like this:
 
+```
+    store_to_azure("messageXYZ.json", "conversational-social", "raw/messages")
+```
+
+
+Point is, once you document the raw data, use this function to store the JSON.
 
 # --------------- Data Cleaning -----------------------
 
@@ -206,39 +216,39 @@ Here's another checklist to go through:
 **WARNING** this list is incomplete.
 
 ## For the Clean File of the Entire Conversation:
-- Conversation ID. You can generate ID by code, by doing something like {Platform Name} + {Hashed value of OP's Username}.
-    If you dont know what hashing is, google it or something - i know for a fact 
-        you have your browser open with 1 million tabs, and this shouldnt be a noticable addition.
-- Source URL. The exact URL of where the data came from.
-- Platform Name
+- Conversation ID of Raw.
+- Source URL. 
 - Convo Title.
 - Hashed version of Convo Title.
+
+- Entire List of Messages in Order.
+When storing the clean conversational data, we can use the Conversation file to manifest 
+    the ENTIRE conversation and this is how its done. 
+This list should store the pointers (basically filepath in the blob. Hint: its the return value of store_to_azure()!)
+    of each message in order.
+Very robust approach since you can choose to read individual message files instead of the entire conversation.
+
 - Number of Users in Conversation.
 - Message Count.
-- Max Reply Depth. E.g. Depth is 3 if there is a comment on a comment on the original post.
-- Average Quality Score. Out of all Quality scores of all comments.
-If you dont know how to calculate data quality, read section 3 of "https://dl.gi.de/server/api/core/bitstreams/89cb2dc4-8a1d-424d-9bce-6569b6e4ae8e/content"
-or just ask AI if you dont like human papers.
-- Average Toxicity Score. Out of all toxicity scores of all comments.
-I'll get into the details of toxicity score later.
-
+- Max Reply Depth.
+- New Average Quality Score, after cleaning.
+- New Average Toxicity Score after cleaning.
 
 
 ## For the Clean File of a single Message:
-- Conversation ID. This ID should be the same as the conversation it belongs to.
-- Message ID. Also generate by code, 
+- Conversation ID of Raw. This ID should be the same as the conversation it belongs to.
+- Message ID of Raw.
 - Hashed version of the messenger's username.
 - User Type. OP? Commenter? Mods?
 - Message Content.
-- Message Length in words. If this is low (e.g. one word response like lmao), dont even bother saving this message as a file.
-- Message Position within the conversation (How many'th message is this in the entire conversation?)
-- Quality Score.
-- Toxicity Score. How angry were the keyboard warriors?
-    Measure by comparing the number of curse words to the length of the message.
-- Likes Count. For reddit, this could be the number of upvotes. 
-For twitter, this could be the combined value of the number of retweets and likes.
+- New Message Length in Words
+- Message Position within the conversation 
+- New Quality Score after cleaning.
+- New Toxicity Score after cleaning.
 
-## Cleaning Quality
+## Common Metadata between both file types:
+
+### Cleaning Quality
 
 - Cleaning Timestamp.
 - Cleaner Script Used.
@@ -251,6 +261,52 @@ For twitter, this could be the combined value of the number of retweets and like
 # -------------------- Storing Clean Data ----------------------------
 
 Storage of clean data is mainly where databases come in play. Since, we like clean data and we want clean data to be stored cleanly.
+
+
+But once again, your division is DIFFERENT with most things.
+So I thought about how storage works for a bit, gave up, and threw the problem into deepseek.
+
+And I actually like the structure it gave me so here we go:
+
+azure-blob://conversational-social/clean/
+├── manifests/
+│   ├── conv_abc123.json
+│   ├── conv_def456.json
+│   └── conv_ghi789.json
+└── messages/
+    ├── conv_abc123/
+    │   ├── msg_001.parquet  
+    │   ├── msg_002.parquet  
+    │   └── msg_003.parquet  
+    ├── conv_def456/
+    │   └── [similar structure]
+    └── conv_ghi789/
+        └── [similar structure]
+
+## Ok What the Hell is going on here!??!?!?!?!?!?
+
+### manifests/
+The directory for the cleaned version of the conversation files.
+These files should be in, once again, JSON. Their purpose is for you to be able to 
+    "manifest" either a part or the entirety of the messages within the conversation.
+
+### messages/
+This is where the cleaned version of each message file should go in.
+Message files will have a different file type - parquet.
+This file type is really efficient when trying to get the content from a single field, 
+    and is way faster at doing so than JSON.
+Since the main content of these messages are the ones being tokenized and fed into the LLM, we like this efficiency.
+
+Ok enough file type yap
+
+All message files within a conversation should be stored into another directory, which shares the same name as
+    the corresponding conversational file e.g.
+    -    Convo file: "manifests/conv_abc123.json"
+    -    Messages in : "messages/conv_abc123"
+
+
+
+
 
 But since the database file is version controlled, we don't want to store the main cleaned content directly in there.
 The solution is as follows:

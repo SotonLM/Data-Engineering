@@ -125,7 +125,7 @@ Random fact drop: we expect in the long term about 5 - 10 TB of data going into 
 
 we have provided a script (src/storefunc.py) which contains a function (store_to_azure) to store a file into the azure blob.
 
-store_to_azure() takes two arguments: the file name and your division's container name.
+store_to_azure() takes three arguments: file name, your division's container name, and the type of your file ("raw" or clean").
 **The Azure Blob container name for your division is "academic-technical". DO NOT STORE ANYWHERE ELSE, OR ADD IRRELEVENT DATA.**
 
 You can import this function to the pipeline you create like this:
