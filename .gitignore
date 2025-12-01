@@ -111,3 +111,14 @@ temp/
 # Backup files
 *.bak
 *.backup
+# LLM data pipeline
+data/raw/*
+data/intermediate/*
+data/clean/*
+data/shard/*
+data/mixture/*
+data/scratch/*
+data/metadata/*.duckdb
+
+# keep empty structure
+!data/**/.gitkeep

@@ -1,114 +1,156 @@
-# Soton LM Data Engineering
+# SotonLM Data Engineering
 
-[](https://www.python.org/downloads/)
-[](https://dvc.org/)
-[](https://duckdb.org/)
-[](https://github.com/psf/black)
-[](https://github.com/astral-sh/ruff)
+🎯 **Project Overview**
 
-## 🎯 Project Overview
+This repository contains the data-engineering code for SotonLM.  
+Our goal is simple:
 
-This is the data engineering division of the SotonLM project, tasked with building high-quality training data for large language models from diverse sources. Our mission is to transform raw, unstructured data from the internet into clean, structured, and version-controlled datasets ready for model training.
+**Turn raw text from multiple domains (academic, web, social) into clean, structured, schema-consistent JSONL ready for LLM training.**
 
-This repository contains all pipeline code, data pointers (DVC), and documentation.
+The pipeline is modular and split into three stages per domain:
 
-## 🚀 Team Structure
+1. **Ingest** → get raw data  
+2. **Clean** → remove noise / normalise  
+3. **Output** → validated records following a consistent schema  
 
-We operate through three specialized divisions, each focused on a different domain of data:
+This repo currently contains the core pipeline skeleton, tests, schema, and local sample data.  
+Contributors will fill in the TODOs under each domain according to issues on GitHub.
 
-| Division | Focus Area | Key Tools & Sources |
-| :--- | :--- | :--- |
-| **🔬 Division 1 - Academic** | Research & Technical Content | `arxiv` (API), `PyMuPDF` (PDFs) |
-| **🌐 Division 2 - Web** | General Knowledge | `Scrapy`, `datasets` (Wikipedia), `BeautifulSoup4` (HTML) |
-| **💬 Division 3 - Social** | Conversational Data | `PRAW` (Reddit), `Scrubadub` (PII Cleaning) |
+---
 
-## ⚙️ Quick Start
+## ⚙️ Project Structure
 
-This guide will set up your local environment, connect you to the data, and get you ready to contribute.
-
-### Prerequisites
-
-  * Python 3.10 or higher
-  * [Git](https://git-scm.com/)
-  * [AWS CLI](https://aws.amazon.com/cli/) (for connecting to S3)
-  * [DVC (Data Version Control)](https://dvc.org/doc/install)
-
-### Setup Steps
-
-1.  **Clone the Repository:**
-
-    ```bash
-    git clone https://github.com/SotonLM/Data-Engineering.git
-    cd Data-Engineering
-    ```
-
-2.  **Create and Activate Virtual Environment:**
-
-    ```bash
-    # Create the environment
-    python -m venv venv
-
-    # Activate it (Mac/Linux)
-    source venv/bin/activate
-
-    # Or (Windows)
-    .\venv\Scripts\activate
-    ```
-
-3.  **Install Dependencies:**
-    We use `pyproject.toml` to define dependencies and `pip-tools` to compile `requirements.txt` files.
-
-    ```bash
-    # Install the core tools to get started
-    pip install pip-tools
-
-    # Compile and install the main dependencies
-    pip-compile pyproject.toml -o requirements.txt
-    pip install -r requirements.txt
-    ```
-
-4.  **Install Git Hooks:**
-    This will automatically format and lint your code on every commit.
-
-    ```bash
-    pre-commit install
-    ```
-
-5.  **Configure AWS & DVC:**
-    This connects you to the S3 bucket where the 100GB+ dataset is stored.
-
-    ```bash
-    # 1. Configure your AWS credentials (using the keys provided by your co-lead)
-    aws configure
-
-    # 2. Pull the data from DVC (this will download the current dataset)
-    dvc pull
-    ```
-
-You are now fully set up and have the latest version of both the code and the data.
-
-## 📁 Project Structure
-
-```text
-soton-lm-data-engineering/
-├── .dvc/                 # DVC internal files
-├── .github/              # GitHub workflows and PR templates
-├── data/
-│   ├── raw/              # Raw source data (tracked by DVC)
-│   │   ├── division_1_academic/
-│   │   ├── division_2_web/
-│   │   └── division_3_social/
-│   └── clean/            # Processed, clean data (tracked by DVC)
-│       └── ...
-├── docs/                 # Documentation (e.g., complete_documentation.json)
-├── src/                  # Source code for all data pipelines
-│   ├── division_1_academic/
-│   ├── division_2_web/
-│   ├── division_3_social/
-│   └── shared/           # Common utilities (e.g., deduplication)
-├── .gitignore
-├── pyproject.toml        # Project definition and dependencies
-├── requirements.txt      # Main locked dependencies (auto-generated)
-└── requirements-dev.txt  # Dev locked dependencies (auto-generated)
+```
+data/
+  raw/
+    academic/
+    web/
+    social/
+  clean/
+    academic/
+    web/
+    social/
+  intermediate/
+  shard/
+  mixture/
+  scratch/
+  metadata/
+docs/
+  data_schema.md
+  CONTRIBUTING.md
+src/
+  ingest/
+  clean/
+  dedupe/
+  shard/
+  mixture/
+  pipeline/
+  shared/
+tests/
+pyproject.toml
+README.md
+requirements.txt
 ```
 
+---
+
+## 🚀 Getting Started (Contributors)
+
+**Requirements:**  
+- Python 3.10+  
+- Git  
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/SotonLM/Data-Engineering.git
+cd Data-Engineering
+```
+
+### 2. Create a virtual environment
+
+```bash
+python3 -m venv .venv
+```
+
+### 3. Activate the virtual environment
+
+**Mac/Linux:**
+
+```bash
+source .venv/bin/activate
+```
+
+**Windows (PowerShell):**
+
+```powershell
+.\venv\Scripts\activate
+```
+
+### 4. Install dependencies
+
+```bash
+pip install -r requirements.txt
+pip install pytest
+```
+
+### 5. Run the tests
+
+```bash
+pytest
+```
+
+You should see all tests passing.
+
+---
+
+## 🧪 Minimal Example Run (Academic)
+
+### Run ingestion
+
+```bash
+python -c "from src.ingest.academic_ingest import run_ingest; run_ingest('data/raw/academic/sample_raw.jsonl')"
+```
+
+### Run cleaning
+
+```bash
+python -c "from src.clean.academic_clean import run_clean; run_clean('data/raw/academic/sample_raw.jsonl', 'data/clean/academic/sample_clean.jsonl')"
+```
+
+After this, you should see output files in:
+
+- `data/raw/academic/`
+- `data/clean/academic/`
+
+---
+
+## 🧭 How to Contribute
+
+Before writing any code:
+
+1. Read `docs/CONTRIBUTING.md`  
+2. Read `docs/data_schema.md`  
+3. Pick an issue assigned to your division  
+   Examples:
+   - ingest academic  
+   - clean web  
+   - ingest social  
+4. Modify **only** the TODO section in the file listed in the issue.  
+   (Anything else will be rejected.)
+
+All cleaned output must validate against the schema.
+
+---
+
+## 📌 Active Work
+
+See the GitHub **Issues** tab for all open tasks.  
+Each task is isolated to a single function to avoid breaking the pipeline.
+
+---
+
+## 🧱 Maintainers
+
+This repo is maintained by the SotonLM Data Engineering team.  
+For questions: open an Issue or contact a division lead.
