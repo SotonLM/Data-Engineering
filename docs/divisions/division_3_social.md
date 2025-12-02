@@ -1,6 +1,5 @@
 
 The following are the instructions for data engineers in division 3 - conversational and social.
-This one is also currently under development.
 
 
 Warning - this document was written based on the instructions for division 1, just because that was 
@@ -8,6 +7,10 @@ Warning - this document was written based on the instructions for division 1, ju
     to let me know or ignore it.
 Additional Warning - this document was written based on the instructions for division 2, which is based
     on division 1. **Same warning as above**.
+
+Another Warning - instructions on data storage is objectively wrong, since we've been working on the instructions
+    in parallel and we both wrote different things. For data storage, check the data_schema.md. That one is more
+    accurate. 
 
 
 # **Main Task** - Create an automated pipeline for data collection
@@ -21,6 +24,10 @@ Here, we will explain in detail what you need to do for each section of the pipe
 
 The data source for your division is mostly the very social media apps that you use today. 
 We've currently provided you the API for Twitter and Reddit, but obviously, feel free to add to this list.
+
+**Update** - we just found out that Reddit and Twitter don't allow data usage for LLM training, which makes it the exact reason on
+    why NOT to use them. But I am going to mention them in this document because A. icba to edit the document again and 
+    B. the explanation should be easier to get the hang of with these examples.
 
 I expect data sources from here to have the shortest amount of text out of all divisions, but that's fine - the point 
     of this division is to fetch in entire conversations; essentially the tree of comments that branch off a post.
