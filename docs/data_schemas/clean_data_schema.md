@@ -1,12 +1,9 @@
 # Clean Data Schema (v1)
 
-This document defines the **canonical schema** for all *clean* documents
-stored under `data/clean/**` and used for sharding / mixtures / training.
+WARNING : THIS SCHEMA IS INCOMPLETE. 
 
-Each line in a clean JSONL file is **one document** (e.g. one webpage, one paper,
-one social post), represented as a single JSON object with the fields below.
-
----
+At the current stage of development, we arent concerning the cleaning process of data.
+We will work on this when the time is right.
 
 ## Required fields
 
@@ -15,8 +12,9 @@ These **must** exist on every clean record.
 | Field          | Type    | Description                                                    |
 |----------------|---------|----------------------------------------------------------------|
 | `id`           | string  | Globally unique ID, usually `"{source}_{raw_id}"`.            |
-| `source`       | string  | High-level domain: `academic`, `web`, `social`, or `other`.   |
-| `subsource`    | string  | More specific origin, e.g. `arxiv`, `wikipedia`, `reddit`.    |
+| `division`       | string  | High-level domain: `academic`, `web`, `social`, or `other`.   |
+| `source`    | string  | More specific origin, e.g. `arxiv`, `wikipedia`, `bluesky`.    |
+
 | `lang`         | string  | ISO language code, e.g. `en`.                                 |
 | `length_tokens`| int     | Number of whitespace-split tokens in `text`.                  |
 | `quality_score`| float   | Heuristic in `[0.0, 1.0]` (1.0 for now, refined later).       |

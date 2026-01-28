@@ -139,24 +139,8 @@ These will be used to manage and debug the pipeline, so that the fetching proces
 
 Added this section because the storage method of raw and clean data are different.
 
-Once again, the documented raw data will be put into the JSON file format. You will now put this file into the microsoft azure cloud storage.
-Random fact drop: we expect in the long term about 5 - 10 TB of data going into the storage.
-
-we have provided a script (src/storefunc.py) which contains a function (store_to_azure) to store a file into the azure blob.
-
-store_to_azure() takes two arguments: the file name and your division's container name.
-**The Azure Blob container name for your division is "web-news". DO NOT STORE ANYWHERE ELSE, OR ADD IRRELEVENT DATA.**
-I recommend trying to separate the clean and the raw files within the container.
-
-You can import this function to the pipeline you create like this:
-
-```
-    from storefunc import store_to_azure
-```
-
-So once documented, store the JSON file onto the blob. Simple as balls.
-
-Quick heads up - storing clean data is a bit more complicated.
+Once documented, raw data should be stored in sharded Parquet files in our storage allocation.
+Each shard should be approximately 100MB in size and contain multiple JSON records.
 
 
 # --------------- Data Cleaning -----------------------
