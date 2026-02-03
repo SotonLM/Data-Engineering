@@ -1,4 +1,4 @@
-# SotonLM Data Team — Weekly Instructions
+# SotonLM Data Team — Current Instructions
 
 This week is about **exploring data ingestion** by writing small, standalone scripts.
 
@@ -38,9 +38,9 @@ contrib/
 ### Script Naming (Important)
 
 Your script filename **must include your name**, for example:
-wiki_scrape_jamie.py
-blog_crawler_mykyta.py
-news_fetch_ricky.py
+- wiki_scrape_jamie.py
+- blog_crawler_mykyta.py
+- news_fetch_ricky.py
 
 This makes ownership clear and avoids conflicts.
 
