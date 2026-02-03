@@ -1,156 +1,86 @@
-# SotonLM Data Engineering
+# SotonLM Data Team — Weekly Instructions
 
-🎯 **Project Overview**
+This week is about **exploring data ingestion** by writing small, standalone scripts.
 
-This repository contains the data-engineering code for SotonLM.  
-Our goal is simple:
-
-**Turn raw text from multiple domains (academic, web, social) into clean, structured, schema-consistent JSONL ready for LLM training.**
-
-The pipeline is modular and split into three stages per domain:
-
-1. **Ingest** → get raw data  
-2. **Clean** → remove noise / normalise  
-3. **Output** → validated records following a consistent schema  
-
-This repo currently contains the core pipeline skeleton, tests, schema, and local sample data.  
-Contributors will fill in the TODOs under each domain according to issues on GitHub.
+The aim is **not** to build production pipelines yet.  
+The aim is to experiment locally, learn what works, and submit scripts for review.
 
 ---
 
-## ⚙️ Project Structure
+## What You Should Do
 
-```
-data/
-  raw/
-    academic/
-    web/
-    social/
-  clean/
-    academic/
-    web/
-    social/
-  intermediate/
-  shard/
-  mixture/
-  scratch/
-  metadata/
-docs/
-  data_schema.md
-  CONTRIBUTING.md
-src/
-  ingest/
-  clean/
-  dedupe/
-  shard/
-  mixture/
-  pipeline/
-  shared/
-tests/
-pyproject.toml
-README.md
-requirements.txt
-```
+### Write a Small Data Collection Script
+
+Create a script that:
+- fetches data from a website or set of pages
+- crawls through pages, APIs, or paginated content
+- extracts text or useful metadata
+- runs **locally** on your machine
+- only collects a **small amount of data** for testing
+
+Examples:
+- crawling a section of Wikipedia
+- scraping blog posts or documentation
+- pulling articles from a public website
+- iterating through a paginated archive
+
+This is exploratory — it does **not** need to be perfect or complete.
 
 ---
 
-## 🚀 Getting Started (Contributors)
+## Where Your Script Should Go
 
-**Requirements:**  
-- Python 3.10+  
-- Git  
+Place your script in one of the following directories:
+scripts/
+experiments/
+contrib/
 
-### 1. Clone the repository
+### Script Naming (Important)
 
-```bash
-git clone https://github.com/SotonLM/Data-Engineering.git
-cd Data-Engineering
-```
+Your script filename **must include your name**, for example:
+wiki_scrape_jamie.py
+blog_crawler_mykyta.py
+news_fetch_ricky.py
 
-### 2. Create a virtual environment
-
-```bash
-python3 -m venv .venv
-```
-
-### 3. Activate the virtual environment
-
-**Mac/Linux:**
-
-```bash
-source .venv/bin/activate
-```
-
-**Windows (PowerShell):**
-
-```powershell
-.\venv\Scripts\activate
-```
-
-### 4. Install dependencies
-
-```bash
-pip install -r requirements.txt
-pip install pytest
-```
-
-### 5. Run the tests
-
-```bash
-pytest
-```
-
-You should see all tests passing.
+This makes ownership clear and avoids conflicts.
 
 ---
 
-## 🧪 Minimal Example Run (Academic)
+## Simple Rules (Please Follow)
 
-### Run ingestion
+- Run scripts **locally only**
+- Do **not** commit large datasets
+- Do **not** modify core pipeline code
+- Do **not** change schemas or directory structure
+- Scripts should be standalone and easy to run
 
+If you generate output files:
+- keep them very small
+- clearly mark them as sample/test data
+
+---
+
+## How To Submit Your Work
+
+1. Create a new branch:
 ```bash
-python -c "from src.ingest.academic_ingest import run_ingest; run_ingest('data/raw/academic/sample_raw.jsonl')"
+git checkout -b feature/<your-name>/<script-name>
 ```
 
-### Run cleaning
+2.	Add your script
+3.	Commit and push:
 
 ```bash
-python -c "from src.clean.academic_clean import run_clean; run_clean('data/raw/academic/sample_raw.jsonl', 'data/clean/academic/sample_clean.jsonl')"
+git add .
+git commit -m "Add <your-name>'s data collection script"
+git push
 ```
 
-After this, you should see output files in:
+4.	Open a Pull Request on GitHub
 
-- `data/raw/academic/`
-- `data/clean/academic/`
+In the PR description, briefly explain:
+	•	what the script does
+	•	what site or source it targets
+	•	any limitations or notes
 
----
-
-## 🧭 How to Contribute
-
-Before writing any code:
-
-1. Read `docs/CONTRIBUTING.md`  
-2. Read `docs/data_schema.md`  
-3. Pick an issue assigned to your division  
-   Examples:
-   - ingest academic  
-   - clean web  
-   - ingest social  
-4. Modify **only** the TODO section in the file listed in the issue.  
-   (Anything else will be rejected.)
-
-All cleaned output must validate against the schema.
-
----
-
-## 📌 Active Work
-
-See the GitHub **Issues** tab for all open tasks.  
-Each task is isolated to a single function to avoid breaking the pipeline.
-
----
-
-## 🧱 Maintainers
-
-This repo is maintained by the SotonLM Data Engineering team.  
-For questions: open an Issue or contact a division lead.
+That’s all.
