@@ -30,10 +30,8 @@ This is exploratory — it does **not** need to be perfect or complete.
 
 ## Where Your Script Should Go
 
-Place your script in one of the following directories:
-scripts/
-experiments/
-contrib/
+Place your script in the following directory:
+- src/ingest/submissions/
 
 ### Script Naming (Important)
 
