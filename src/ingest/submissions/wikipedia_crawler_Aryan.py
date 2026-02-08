@@ -95,7 +95,6 @@ def crawl(start_url):
     return results
 
 
-# Run the crawler
 data = crawl(START_URL)
 
 # Print results
