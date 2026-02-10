@@ -27,8 +27,6 @@ A **small sample** of the RAW Wikipedia shards is available for local testing.
 Download link (SharePoint):  
 (https://sotonac.sharepoint.com/:f:/t/SotonLM/IgATrQX_yExESZPrR5JgW8GvAcIui1FK9AgZIy4RTgg_lnI?e=KS3KY8)
 
-If you do not need real data for your task, you can skip this.
-
 ## What This Week Is About
 
 This week is **not** about building production pipelines.
