@@ -12,10 +12,11 @@ The aim is to experiment locally, learn what works, and submit scripts for revie
 ### Write a Small Data Collection Script
 
 Create a script that:
+
 - fetches data from a website or set of pages
 - crawls through pages, APIs, or paginated content
 - extracts text or useful metadata
-- runs **locally** on your machine
+- runs locally on your machine
 - only collects a **small amount of data** for testing
 
 Examples:
@@ -31,15 +32,19 @@ This is exploratory — it does **not** need to be perfect or complete.
 ## Where Your Script Should Go
 
 Place your script in the following directory:
-- src/ingest/submissions/
+```
+src/ingest/submissions/
+```
+---
 
-### Script Naming (Important)
+## Script Naming (Important)
 
 Your script filename **must include your name**, for example:
-- wiki_scrape_jamie.py
-- blog_crawler_mykyta.py
-- news_fetch_ricky.py
-
+```
+wiki_scrape_jamie.py
+blog_crawler_mykyta.py
+news_fetch_ricky.py
+```
 This makes ownership clear and avoids conflicts.
 
 ---
@@ -64,16 +69,13 @@ If you generate output files:
 ```bash
 git checkout -b feature/<your-name>/<script-name>
 ```
-
 2.	Add your script
 3.	Commit and push:
-
 ```bash
 git add .
 git commit -m "Add <your-name>'s data collection script"
 git push
 ```
-
 4.	Open a Pull Request on GitHub
 
 In the PR description, briefly explain:
