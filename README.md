@@ -16,6 +16,17 @@ We are now moving from **“can we ingest data?”** to **“how do we work with
 
 ---
 
+## Sample Data Access
+
+A **small sample** of the RAW Wikipedia shards is available for local testing.
+
+- These files are **samples only**, not the full dataset
+- Leads will run scripts on the full dataset if needed
+- Each file is 512MiB.
+
+Download link (SharePoint):  
+(https://sotonac.sharepoint.com/:f:/t/SotonLM/IgATrQX_yExESZPrR5JgW8GvAcIui1FK9AgZIy4RTgg_lnI?e=KS3KY8)
+
 ## What This Week Is About
 
 This week is **not** about building production pipelines.
