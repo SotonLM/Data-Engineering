@@ -36,9 +36,11 @@ Rules:
 
 ---
 
-## Optional fields
+## Nullable fields
 
-These may be `null` or omitted if unknown.
+These may be `null` or omitted if unknown. 
+
+NOTE: in terms of legal data, if both the licensing and robots.txt content are unknown, DO NOT INGEST that data.
 
 | Field       | Type     | Description                         |
 |-------------|----------|-------------------------------------|
@@ -97,3 +99,8 @@ These may be `null` or omitted if unknown.
   "timestamp": "2024-10-02T09:30:00Z",
   "url": "https://reddit.com/r/.../comments/..."
 }
+
+
+
+- At the current progress, ok good we got the wikipedia ingestion script going and we managed to get 90+ GB of data.
+- We have a sharding script
