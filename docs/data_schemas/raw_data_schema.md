@@ -103,4 +103,7 @@ NOTE: in terms of legal data, if both the licensing and robots.txt content are u
 
 
 - At the current progress, ok good we got the wikipedia ingestion script going and we managed to get 90+ GB of data.
-- We have a sharding script
+- We have a sharding script to document data and chunk them togetehr into a shard
+- we however still need more data. Specifically a greater variety of them.
+- more ingestion scripts, or even dropping huggingface links for pre made datasets.
+- we need formatting scripts, making all data conform to la schema

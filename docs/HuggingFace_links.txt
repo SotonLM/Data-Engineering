@@ -1,0 +1,4 @@
+If you find a nice dataset in huggingface (or kaggle, whatever data ingestion platform)
+which we can use to train the LLM from
+
+Drop the links here, so we can ingest the data in our server.
