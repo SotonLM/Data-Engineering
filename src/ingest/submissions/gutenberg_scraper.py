@@ -6,7 +6,6 @@ removes license/header/footer text,
 
 """
 
-
 import requests
 import re
 
@@ -108,8 +107,12 @@ def print_first_n_lines(text, n=10):
 
 
 if __name__ == "__main__":
-    # example Gutenberg book IDs
-    book_ids = [100, 1342, 1661]  # small number of books
+    # For testing
+    book_ids = [100, 1342, 1661]
     for bid in book_ids:
         harvest_text(bid)
+
+    # Around 77000 books in library currently
+    #for bid in range(77000):
+        #harvest_text(bid)
 
