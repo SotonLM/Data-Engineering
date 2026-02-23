@@ -22,11 +22,11 @@ import random
 
 
 def harvest_text(book_id):
-    # Official cache mirror (much more reliable)
+    # Official cache mirror (much more reliable and for following Gutenberg's guidelines)
     target_url = f"https://www.gutenberg.org/cache/epub/{book_id}/pg{book_id}.txt"
 
     headers = {
-        "User-Agent": "SotonLM-Test (your_email@example.com)"
+        "User-Agent": "SotonLM-Test"
     }
 
     try:
@@ -141,6 +141,8 @@ def extract_title(text):
 
 
 def fetch_gutenberg_license(book_id):
+    """Fetches license information from the RDF metadata of the book."""
+
     rdf_url = f"https://www.gutenberg.org/ebooks/{book_id}.rdf"
     headers = {"User-Agent": "SotonLM-Test"}
 
@@ -172,7 +174,7 @@ def fetch_gutenberg_license(book_id):
 
 
 def write_gutenberg_jsonl(book_id, text, out_path="gutenberg.jsonl"):
-    # Only write if extracted text is of reasonable length (e.g. > 1000 chars)
+    # Only write if extracted text is of reasonable length (e.g. > 1000 chars) and not None (fetch error)
     if text is None:
         print(f"Skipping {book_id} due to fetch error")
         return
