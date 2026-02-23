@@ -8,20 +8,44 @@ removes license/header/footer text,
 
 import requests
 import re
+import time, random
+import json
+import hashlib
+from datetime import datetime, timezone
+import xml.etree.ElementTree as ET
+
+
+import requests
+import re
+import time
+import random
 
 
 def harvest_text(book_id):
-    # Taking book_id and then scraping txt off that page
-    # Already provided with .txt files no need for HTML parser
-    target_url = f"https://www.gutenberg.org/files/{book_id}/{book_id}-0.txt"
+    # Official cache mirror (much more reliable)
+    target_url = f"https://www.gutenberg.org/cache/epub/{book_id}/pg{book_id}.txt"
 
-    # To be polite to website
-    headers = {"User-Agent": "SotonLM-Test"}
+    headers = {
+        "User-Agent": "SotonLM-Test (your_email@example.com)"
+    }
 
-    r = requests.get(target_url, headers=headers)
-    if r.status_code == 200:
-        rawtext = r.text
-        print_first_n_lines(strip_gutenberg_headers(rawtext), 500) # Change this later to just save as JSON?
+    try:
+        r = requests.get(target_url, headers=headers, timeout=15)
+
+        if r.status_code == 200:
+            rawtext = r.text
+            cleaned = strip_gutenberg_headers(rawtext)
+            return cleaned
+            #print_first_n_lines(cleaned, 20)
+
+        else:
+            print(f"Failed {book_id} (status {r.status_code})")
+
+        # Be polite to Gutenberg servers
+        time.sleep(random.uniform(1, 3))
+
+    except Exception as e:
+        print(f"Error fetching {book_id}: {e}")
         
 
 def strip_gutenberg_headers(raw_text):
@@ -75,12 +99,6 @@ def final_clean(raw_text):
     return clean_text
 
 
-def skip_to_first_paragraph(raw_text):
-    """
-    Most books include contents page or other jargon like authors address ect, so trying to skip that
-    """
-
-
 def looks_like_paragraph(line):
     # Regex to detect if it looks like beginning
     if len(line) < 70:
@@ -98,7 +116,6 @@ def looks_like_paragraph(line):
     return True
 
 
-
 def print_first_n_lines(text, n=10):
     # For testing
     lines = text.splitlines()
@@ -106,13 +123,96 @@ def print_first_n_lines(text, n=10):
         print(line)
 
 
+def iso_now():
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def extract_title(text):
+    """
+    Try to extract title from beginning of Gutenberg book.
+    Usually appears near the top after header stripping.
+    """
+    lines = text.splitlines()
+    for line in lines[:20]:
+        if line.strip() and line.isupper() is False:
+            if len(line.split()) <= 15:
+                return line.strip()
+    return "Unknown Title"
+
+
+def fetch_gutenberg_license(book_id):
+    rdf_url = f"https://www.gutenberg.org/ebooks/{book_id}.rdf"
+    headers = {"User-Agent": "SotonLM-Test"}
+
+    try:
+        r = requests.get(rdf_url, headers=headers, timeout=10)
+        if r.status_code != 200:
+            return None, None
+
+        root = ET.fromstring(r.content)
+
+        # Namespaces used in Gutenberg RDF
+        ns = {
+            "dcterms": "http://purl.org/dc/terms/",
+        }
+
+        rights = root.find(".//dcterms:rights", ns)
+        if rights is not None and rights.text:
+            rights_text = rights.text.strip()
+
+            if "public domain" in rights_text.lower():
+                return "public_domain", rights_text
+            else:
+                return "other", rights_text
+
+    except Exception:
+        pass
+
+    return None, None
+
+
+def write_gutenberg_jsonl(book_id, text, out_path="gutenberg.jsonl"):
+    # Only write if extracted text is of reasonable length (e.g. > 1000 chars)
+    if text is None:
+        print(f"Skipping {book_id} due to fetch error")
+        return
+
+    if len(text) < 1000:
+        print(f"Skipping {book_id} due to short text length ({len(text)} chars)")
+        return
+
+    title = extract_title(text)
+    timestamp = iso_now()
+    license = fetch_gutenberg_license(book_id)
+    title = extract_title(text)
+
+    obj = {
+    "id": f"web_gutenberg_{book_id}",
+    "source": "web",
+    "subsource": "gutenberg",
+    "language": "en",
+    "length_tokens": 123456,
+    "quality_score": 1.0,
+    "text": text,
+    "timestamp": timestamp,
+    "title": title,
+    "url": f"https://www.gutenberg.org/ebooks/{book_id}",
+    "license_type": license[0] if license[0] else "Unknown License Type",
+    "license": license[1] if license[1] else "Unknown License",
+    "robots_txt_content": "User-agent: * Disallow: /ebooks/search"
+    }
+
+    with open(out_path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(obj, ensure_ascii=False) + "\n")
+
+
 if __name__ == "__main__":
     # For testing
-    book_ids = [100, 1342, 1661]
+    book_ids = [80000, 1342, 1661, 3600, 84, 11, 2701, 1080, 1952, 120]
     for bid in book_ids:
-        harvest_text(bid)
+        text = harvest_text(bid)
+        write_gutenberg_jsonl(bid, text)
 
-    # Around 77000 books in library currently
+    # Real when downloading full dataset, just loop through all page nums (up to 77000+)
     #for bid in range(77000):
-        #harvest_text(bid)
-
+        #write_gutenberg_jsonl(bid, harvest_text(bid))
