@@ -141,7 +141,9 @@ def extract_title(text):
 
 
 def fetch_gutenberg_license(book_id):
-    """Fetches license information from the RDF metadata of the book."""
+    """
+    Fetches license information from the RDF metadata of the book.
+    """
 
     rdf_url = f"https://www.gutenberg.org/ebooks/{book_id}.rdf"
     headers = {"User-Agent": "SotonLM-Test"}
@@ -172,6 +174,16 @@ def fetch_gutenberg_license(book_id):
 
     return None, None
 
+def count_tokens(text: str) -> int:
+    # Split on whitespace
+    return len(text.split())
+
+def basic_quality(text: str, tokens: int) -> float:
+    # Basic heuristic: longer texts with more punctuation are likely higher quality
+    length_score = min(1.0, tokens / 100000)  # Cap at 100k tokens for scoring
+    punctuation_score = min(1.0, sum(text.count(p) for p in ".,!?;:") / 1000)  # Cap at 1000 punctuation marks
+    return (length_score + punctuation_score) / 2
+
 
 def write_gutenberg_jsonl(book_id, text, out_path="gutenberg.jsonl"):
     # Only write if extracted text is of reasonable length (e.g. > 1000 chars) and not None (fetch error)
@@ -187,14 +199,16 @@ def write_gutenberg_jsonl(book_id, text, out_path="gutenberg.jsonl"):
     timestamp = iso_now()
     license = fetch_gutenberg_license(book_id)
     title = extract_title(text)
+    tokens = count_tokens(text)
+    quality_score = basic_quality(text, tokens)
 
     obj = {
     "id": f"web_gutenberg_{book_id}",
     "source": "web",
     "subsource": "gutenberg",
     "language": "en",
-    "length_tokens": 123456,
-    "quality_score": 1.0,
+    "length_tokens": tokens,
+    "quality_score": quality_score,
     "text": text,
     "timestamp": timestamp,
     "title": title,
