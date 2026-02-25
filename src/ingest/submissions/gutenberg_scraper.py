@@ -185,7 +185,7 @@ def basic_quality(text: str, tokens: int) -> float:
     return (length_score + punctuation_score) / 2
 
 
-def write_gutenberg_jsonl(book_id, text, out_path="gutenberg.jsonl"):
+def write_gutenberg_jsonl(book_id, text, out_path="./data_temp/gutenberg.jsonl"):
     # Only write if extracted text is of reasonable length (e.g. > 1000 chars) and not None (fetch error)
     if text is None:
         print(f"Skipping {book_id} due to fetch error")
@@ -228,6 +228,7 @@ if __name__ == "__main__":
     for bid in book_ids:
         text = harvest_text(bid)
         write_gutenberg_jsonl(bid, text)
+        
 
     # Real when downloading full dataset, just loop through all page nums (up to 77000+)
     #for bid in range(77000):
