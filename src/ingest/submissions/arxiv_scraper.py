@@ -1,8 +1,7 @@
 """
-Gutenberg Text Harvester
+Arxiv Scraper
 
-Fetches a small number of Project Gutenberg books, (Just for testing as stated in instruction but can just loop through all page nums to do all)
-removes license/header/footer text,
+Loops through every category, extracts raw text, does BASIC cleaning and saves in JSONL format.
 
 """
 
@@ -24,6 +23,7 @@ import arxiv
 BASE_URL = "https://arxiv.org/pdf/"
 BASE_URL_HTML = "https://arxiv.org/abs/"
 BASE_PAGES_TO_SCRAPE = "https://export.arxiv.org/api/query"
+MAX_RESULTS = 200
 
 
 def get_paper_number_from_url(url):
@@ -290,8 +290,45 @@ def write_arxiv_jsonl(text, title, timestamp, id, out_path="./data_temp/arxiv.js
         f.write(json.dumps(obj, ensure_ascii=False) + "\n")
 
 
+def get_categories():
+    headers = {
+        "User-Agent": "SotonLM-Test"
+    }
+    categorys = []
+
+    try:
+        r = requests.get("https://arxiv.org/category_taxonomy", headers=headers, timeout=15)
+        soup = BeautifulSoup(r.text, "html.parser")
+
+        allTags = soup.find_all("h4")
+        for tag in allTags[1:]:
+            category = tag.getText().split(" ")
+            categorys.append(category[0])
+    except Exception as e:
+        print(f"Error finding category: {e}")
+
+    return categorys
+
+
+
 if __name__ == "__main__":
     # Loop through and cycle through all papers
+    for category in get_categories():
+        start = 0
+        # Getting total num of results
+        headers = {
+            "User-Agent": "SotonLM-Test"
+        }
 
-    get_final_text(BASE_PAGES_TO_SCRAPE)
+        try:
+            r = requests.get(f"{BASE_PAGES_TO_SCRAPE}?search_query=cat:{category}&start=0&max_results=1", headers=headers, timeout=
+                             15)
+            soup = BeautifulSoup(r.text, "xml")
+            total = soup.find("opensearch:totalResults").text
+        except Exception as e:
+            print(f"Error getting total categorys: {e}")
 
+        while start < int(total):
+            url = f"{BASE_PAGES_TO_SCRAPE}?search_query=cat:{category}&start={start}&max_results={MAX_RESULTS}"
+            get_final_text(url)
+            start += MAX_RESULTS
